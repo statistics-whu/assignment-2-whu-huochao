@@ -1,0 +1,220 @@
+---
+title: "第二次作业"
+author: "霍超"
+date: "2024-11-30"
+output: html_document
+  word_document: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+#load library
+library(tidyverse)
+library(kableExtra)
+library(lubridate)
+library(scales)
+library(plotly)
+library(patchwork)
+library(ggrepel)
+
+# 第一题：生活大爆炸观众数据分析
+
+导入数据
+data<-read.csv("C:/武大/统计学/作业2/BigBangTheory.csv")
+a.
+min_viewers<-min(data$Viewers..millions.)
+max_viewers<-max(data$Viewers..millions.)
+print(paste("最小观众数量：",min_viewers))
+print(paste("最大观众数量：",max_viewers))
+
+"最小观众数量： 13.3"；"最大观众数量： 16.5"
+
+b.
+计算均值（mean）
+mean_viewers <- mean(data$Viewers..millions., na.rm = TRUE)
+计算中位数（median）
+median_viewers <- median(data$Viewers..millions., na.rm = TRUE)
+计算众数（mode）
+mode_viewers <- as.numeric(names(sort(-table(data$Viewers..millions.)))[1])
+打印均值、中位数和众数
+print(paste("均值（mean）:", mean_viewers))
+print(paste("中位数（median）:", median_viewers))
+print(paste("众数（mode）:", mode_viewers))
+
+c.
+计算第一个四分位数 (Q1)
+Q1 <- quantile(data$Viewers..millions., 0.25, na.rm = TRUE)
+
+计算第三个四分位数 (Q3)
+Q3 <- quantile(data$Viewers..millions., 0.75, na.rm = TRUE)
+
+print(paste("First Quartile (Q1):", Q1))
+print(paste("Third Quartile (Q3):", Q3))
+
+d.
+画出散点图
+ggplot(data, aes(x = Air.Date, y = Viewers..millions.)) +
+  geom_point() 
+  
+# 第二题：NBA球员得分
+a.
+pt_data<-read_excel("C:/武大/统计学/作业2/NBAPlayerPts.xlsx")
+freq_ppg<-(table(cut(pt_data$PPG,breaks = seq(10,30,by=5))))
+freq_ppg
+b.freq_ppg<-freq(pt_data$PPG,breaks=seq(10,30,by=5))
+c.hist(pt_data$PPG)
+d.round(skewness(pt_data$PPG),2)
+e.
+m<-length(pt_data$Player[pt_data$PPG>=20])/length(pt_data$Player)
+m
+
+# 第三题：计算
+  
+a.总体标准差SD=500，平均值标准误差SE=20
+由500/sqrt(n)=20 得出n=625
+b.点估计值在总体均值±25以内的计算：
+x<-pnorm(25/20)-pnorm(-25/20)
+print(x)
+
+# 第四题：青年专业杂志
+a.
+ypm_data<-read_excel("C:/武大/统计学/作业2/Professional.xlsx")
+str(ypm_data)
+summary(ypm_data)
+b.置信区间上下限=xbar±（t*s/sqrt(n))
+c.fun_ypm_prop <- function(a) {
+  num <- length(ypm$Age)
+  prop <- a/num
+  ci_ypm_low <- prop - qt(0.025,num-1,lower.tail = FALSE)*sqrt(prop*(1-prop)/num)
+  ci_ypm_up <- prop + qt(0.025,num-1,lower.tail = FALSE)*sqrt(prop*(1-prop)/num)
+  ci_ypm <- c(round(ci_ypm_low,2),round(ci_ypm_up,2))
+}
+
+
+# 第五题：质量助理公司
+a. 选择t检验，t值设为t1，p值设为p1
+n<-30
+s<-0.21
+sigma<-0.21
+mu<-12
+alpha<-0.01
+x_mean<-12.1
+t1<-(x_mean-mu)/(s/sqrt(n))
+p1<-2*pt(-abs(t1),df=n-1)
+
+cat(t1)
+cat(p1)
+
+b.
+sample_size <- 30
+sample1 <- rnorm(sample_size, mean = 12, sd = 0.21)
+sample2 <- rnorm(sample_size, mean = 12, sd = 0.21)
+sample3 <- rnorm(sample_size, mean = 12, sd = 0.21)
+sample4 <- rnorm(sample_size, mean = 12, sd = 0.21)
+
+计算四个样本的标准差
+sd_sample1 <- sd(sample1)
+sd_sample2 <- sd(sample2)
+sd_sample3 <- sd(sample3)
+sd_sample4 <- sd(sample4)
+
+sd <- 0.21
+
+输出结果
+cat( sd_sample1)
+cat(sd_sample2)
+cat(sd_sample3)
+cat(sd_sample4)
+
+检查总体标准差是否为0.21的假设
+
+c.置信区间上下限计算=xbar±t(s/sqrt(n))
+n=30,s=0.21,xbar=12
+
+# 第六题：
+a.导入数据
+vc_data<-read.csv2("C:/武大/统计学/作业2/Occupancy.csv")
+a1<-sum(vc_data2$a0703=="Yes")
+a2<-sum(vc_data2$a0703=="No")
+print(a1)
+print(a2)
+
+b1<-sum(vc_data2$b0803=="Yes")
+b2<-sum(vc_data2$b0803=="No")
+print(b1)
+print(b2)
+
+prop_07<-round(a1/(a1+a2))
+prop_08<-round(b1/b1+b2)）
+print(prop_07)
+print(prop_08)
+b.
+prop_diff<-prop.test(x=sum(vc_data2$a0703),n=length(vc_data2$a0703),
+                     y=sum(vc_data2$b0803),m=length(vc_data2$b0803),
+                           correct=FALSE)
+print(prop_diff$conf.int)
+c.是的，两者有差异，且2008年3月出租率大于2007年
+
+# 第七题：
+a.
+sl_data<-read_excel("C:/武大/统计学/作业2/Training.xlsx")
+summary(sl_data$Current)
+summary(sl_data$Proposed)
+
+b.
+t_test_data<-t.test(sl_data$Current,sl_data$Proposed)
+print(t_test_data)
+
+c.var(sl_data$Current)
+var(sl_data$Proposed)
+sd(sl_data$Current)
+sd(sl_data$Proposed)
+
+方差检验：var.test(sl_data$Current,sl_data$Proposed)
+
+d.比较两种检验下两种训练方法的差异 可得结论
+e.建议学生在不同的训练方法下统计通过考试的相关数据
+
+# 第八题：
+a.
+c_data<-read_excel("C:/武大/统计学/作业2/Camry.xlsx")
+plot(c_data$Miles,c_data$Price,xlab = "miles",ylab = "price",main="散点图")
+
+b.价格和里程约为负相关关系
+c.
+price<-c_data$Price
+miles<-c_data$Miles
+lm_model<-lm(price~miles,data = c_data)
+intercept<-coef(lm_model)[1]
+slope<-coef(lm_model)[2]
+cat("price=",round(intercept,2),"+",round(slope,2),"* miles")
+
+d.
+price<-c_data$Price
+miles<-c_data$Miles
+mod_car <- lm(Price ~ Miles,data = c_data)
+summary(mod_car)
+
+# 第九题：
+kh_data<-read_excel("C:/武大/统计学/作业2/WE.xlsx")
+a.
+ggplot(kh_data,aes(x=kh_data$流失,y=kh_data$当月客户幸福指数,fill=kh_data$流失))+
+  geom_boxplot()+
+  theme_minimal()+
+  labs(
+    title = "幸福指数在不同流失状态下的分布",
+    x="流失状态",
+    y="幸福指数"
+  )
+  
+ggplot(kh_data,aes(x=kh_data$流失,y=kh_data$坊间间隔变化,fill=kh_data$流失))+
+  geom_boxplot()+
+  theme_minimal()+
+  labs(
+    title = "坊间间隔变化在不同流失状态下的分布",
+    x="流失状态",
+    y="坊间间隔变化"
+  )
+  
+
