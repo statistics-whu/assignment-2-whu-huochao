@@ -3,9 +3,9 @@ title: "第二次作业"
 author: "霍超"
 date: "2024-11-30"
 output: html_document
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
   pdf_document: default
 ---
 
@@ -67,7 +67,7 @@ c.hist(pt_data$PPG)
 d.round(skewness(pt_data$PPG),2)
 e.
 m<-length(pt_data$Player[pt_data$PPG>=20])/length(pt_data$Player)
-m
+print(m)
 
 # 第三题：计算
   
@@ -199,22 +199,48 @@ summary(mod_car)
 # 第九题：
 kh_data<-read_excel("C:/武大/统计学/作业2/WE.xlsx")
 a.
-ggplot(kh_data,aes(x=kh_data$流失,y=kh_data$当月客户幸福指数,fill=kh_data$流失))+
-  geom_boxplot()+
-  theme_minimal()+
-  labs(
-    title = "幸福指数在不同流失状态下的分布",
-    x="流失状态",
-    y="幸福指数"
-  )
+
+创建一个箱线图比较流失客户和非流失客户的当月客户幸福指数
+  ggplot(kh_data, aes(x = as.factor(流失), y = 当月客户幸福指数, fill = as.factor(流失))) +
+    geom_boxplot() +
+    labs(title = "流失客户与非流失客户的当月客户幸福指数比较", x = "流失", y = "当月客户幸福指数")
   
-ggplot(kh_data,aes(x=kh_data$流失,y=kh_data$坊间间隔变化,fill=kh_data$流失))+
-  geom_boxplot()+
-  theme_minimal()+
-  labs(
-    title = "坊间间隔变化在不同流失状态下的分布",
-    x="流失状态",
-    y="坊间间隔变化"
-  )
+  创建一个散点图比较流失客户和非流失客户的当月服务优先级和服务优先级相比上月的变化
+  ggplot(kh_data, aes(x = 当月服务优先级, y = 服务优先级相比上月的变化, color = as.factor(流失))) +
+    geom_point() +
+    labs(title = "流失客户与非流失客户的服务优先级比较", x = "当月服务优先级", y = "服务优先级相比上月的变化")
   
+   创建一个堆叠柱状图比较流失客户和非流失客户的当月登录次数和博客数相比上月的变化
+  ggplot(kh_data, aes(x = 当月登录次数, y = 博客数相比上月的变化, fill = as.factor(流失))) +
+    geom_bar(stat = "identity", position = "stack") +
+    labs(title = "流失客户与非流失客户的登录次数和博客数比较", x = "当月登录次数", y = "博客数相比上月的变化")
+  
+
+定义函数执行t检验并返回p-value
+t_test_mean<-function(kh_data,group,variable){
+t.test(group1,group2)
+}
+
+t检验
+t_test_results<-kh_data,frame(
+  variable=character(),
+  p_value =numeric()
+)
+
+t_test_results$p_value<-sapply(t_test_results$variable,funciton){
+t_test_mean(kh_data,kh_data$流失，var)$p.value
+})
+
+查看t检验各指标
+summary(kh_data$当月客户幸福指数)
+summary(kh_data$当月客户支持)
+summary(kh_data$当月服务优先级)
+summary(kh_data$当月登录次数)
+summary(kh_data$客户使用期限)
+summary(kh_data$访问间隔变化)
+
+输出模型摘要
+model<-glm(kh_data$流失~kh_data$当月客户幸福指数+kh_data$当月客户支持+kh_data$当月服务优先级+kh_data$当月登录次数+kh_data$客户使用期限+kh_data$访问间隔变化,
+           data = kh_data,family = binomial)
+summary(model)
 
